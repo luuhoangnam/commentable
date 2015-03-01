@@ -3,6 +3,7 @@
 namespace Namest\Commentable;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -11,6 +12,8 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  *
  * @author  Nam Hoang Luu <nam@mbearvn.com>
  * @package Namest\Commentable
+ *
+ * @property-read Collection $commenters
  *
  * @method static QueryBuilder|EloquentBuilder|$this hasCommentBy(Model $commenter)
  */
@@ -33,5 +36,20 @@ trait CommentableTrait
                 ->where('comments.commenter_id', '=', $commenter->getKey());
 
         return $builder;
+    }
+
+    /**
+     * TODO Optimize performance by reduce SQL query
+     *
+     * @return array
+     */
+    public function getCommentersAttribute()
+    {
+        $relation = $this->hasMany(Comment::class, 'commentable_id');
+        $relation->getQuery()->where('commentable_type', '=', get_class($this));
+
+        return new Collection(array_map(function ($like) {
+            return forward_static_call([$like['commenter_type'], 'find'], $like['commenter_id']);
+        }, $relation->getResults()->toArray()));
     }
 }
