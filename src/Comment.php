@@ -36,13 +36,21 @@ class Comment extends Model
             throw new \BadMethodCallException('Can not call `about` method directly.' .
                                               'You must use: $commenter->commment($message)->about($object);');
 
+        // Event
+        /** @var Model $this */
+        $events = $this->getEventDispatcher();
+        $events->fire('namest.commentable.commenting', [$commentable, $this->message]);
+
         // Set commentable
         $this->commentable_id   = $commentable->getKey();
         $this->commentable_type = get_class($commentable);
 
         // Save
-        if ($this->save())
+        if ($this->save()) {
+            $events->fire('namest.commentable.commented', [$this]);
+
             return $this;
+        }
 
         throw new \Exception("Can not save comment.");
     }
