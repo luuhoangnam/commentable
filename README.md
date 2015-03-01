@@ -16,3 +16,9 @@ $posts = \App\Post::hasCommentBy($user); // Get all posts that the user was leav
 $comments = \Namest\Commentable\Comment::by($user); // Return all comments that the user was leave
 $comments = \Namest\Commentable\Comment::by($user, 'App\Post'); // Same as above but filter only comments on posts
 ```
+
+# Censoring
+
+Set up censoring options in `config/commentable.php` file
+
+

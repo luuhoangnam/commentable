@@ -2,8 +2,8 @@
 
 return [
     'censor' => [
-        'break'   => false,
-        'replace' => '***',
-        'words'   => ['fuck', 'shit', 'damn'],
+        'break'   => false, // Throws CensorException if detect not allowed word appear
+        'replace' => '***', // The word will be replace not allowed words
+        'words'   => ['fuck', 'shit', 'damn'], // Not allowed words (not case-sensitive)
     ],
 ];
