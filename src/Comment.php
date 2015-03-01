@@ -83,7 +83,7 @@ class Comment extends Model
             $oldMessage = $message;
 
             $quote   = preg_quote($word, '/');
-            $message = preg_replace("/" . $quote . "/", $replace, $message);
+            $message = preg_replace("/" . $quote . "/i", $replace, $message); // Not case sensitive
 
             if ($oldMessage !== $message && $break)
                 throw new CensorException($word, "Not allowed word [{$word}] occur.");
