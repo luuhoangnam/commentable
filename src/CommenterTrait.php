@@ -60,11 +60,10 @@ trait CommenterTrait
         $table   = $this->getTable();
         $builder = $query->getQuery();
 
-        $query->getQuery()
-              ->join('comments', 'comments.commenter_id', '=', "{$table}.id")
-              ->where('comments.commenter_type', '=', get_class($this))
-              ->where('comments.commentable_id', '=', $commentable->getKey())
-              ->where('comments.commentable_type', '=', get_class($commentable));
+        $builder->join('comments', 'comments.commenter_id', '=', "{$table}.id")
+                ->where('comments.commenter_type', '=', get_class($this))
+                ->where('comments.commentable_id', '=', $commentable->getKey())
+                ->where('comments.commentable_type', '=', get_class($commentable));
 
         return $builder;
     }

@@ -27,11 +27,10 @@ trait CommentableTrait
         $table   = $this->getTable();
         $builder = $query->getQuery();
 
-        $query->getQuery()
-              ->join('comments', 'comments.commentable_id', '=', "{$table}.id")
-              ->where('comments.commentable_type', '=', get_class($this))
-              ->where('comments.commenter_type', '=', get_class($commenter))
-              ->where('comments.commenter_id', '=', $commenter->getKey());
+        $builder->join('comments', 'comments.commentable_id', '=', "{$table}.id")
+                ->where('comments.commentable_type', '=', get_class($this))
+                ->where('comments.commenter_type', '=', get_class($commenter))
+                ->where('comments.commenter_id', '=', $commenter->getKey());
 
         return $builder;
     }
