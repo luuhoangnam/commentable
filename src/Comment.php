@@ -3,7 +3,8 @@
 namespace Namest\Commentable;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
  * Class Comment
@@ -13,6 +14,8 @@ use Illuminate\Database\QueryException;
  * @property string commenter_type
  * @property int    commentable_id
  * @property string commentable_type
+ *
+ * @method static QueryBuilder|EloquentBuilder|$this by(Model $commenter, $commentableType = null)
  *
  * @author  Nam Hoang Luu <nam@mbearvn.com>
  * @package Namest\Commentable
@@ -42,5 +45,25 @@ class Comment extends Model
             return $this;
 
         throw new \Exception("Can not save comment.");
+    }
+
+    /**
+     * @param EloquentBuilder|QueryBuilder $query
+     * @param Model                        $commenter
+     * @param string                       $commentableType
+     *
+     * @return QueryBuilder
+     */
+    public function scopeBy($query, Model $commenter, $commentableType = null)
+    {
+        $builder = $query->getQuery();
+
+        $builder->where('comments.commenter_type', '=', get_class($commenter))
+                ->where('comments.commenter_id', '=', $commenter->getKey());
+
+        if ($commentableType != null)
+            $builder->where('comments.commentable_type', '=', $commentableType);
+
+        return $builder;
     }
 }
