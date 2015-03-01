@@ -66,4 +66,53 @@ class Comment extends Model
 
         return $builder;
     }
+
+    /**
+     * @param string $message
+     *
+     * @return string
+     * @throws CensorException
+     */
+    public function censor($message)
+    {
+        $break   = config('commentable.censor.break');
+        $replace = config('commentable.censor.replace');
+        $words   = config('commentable.censor.words');
+
+        foreach ($words as $word) {
+            $oldMessage = $message;
+
+            $quote   = preg_quote($word, '/');
+            $message = preg_replace("/" . $quote . "/", $replace, $message);
+
+            if ($oldMessage !== $message && $break)
+                throw new CensorException($word, "Not allowed word [{$word}] occur.");
+        }
+
+        return $message;
+    }
+
+    /**
+     * @param string $message
+     *
+     * @return string
+     */
+    public function getMessageAttribute($message)
+    {
+        try {
+            $message = $this->attributes['message'];
+
+            return $this->censor($message);
+        } catch ( CensorException $e ) {
+            return $message;
+        }
+    }
+
+    /**
+     * @param string $message
+     */
+    public function setMessageAttribute($message)
+    {
+        $this->attributes['message'] = $this->censor($message);
+    }
 }
