@@ -9,4 +9,5 @@ $comment = $user->comment('Awesome')->about($post); // Return \Namest\Commentabl
 
 ```php
 $users = \App\User::wasCommentedOn($post); // Return all user was commented on a post
+$posts = \App\Post::hasCommentBy($user); // Get all posts that the user was leave comment on
 ```
