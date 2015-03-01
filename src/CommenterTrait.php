@@ -36,6 +36,8 @@ trait CommenterTrait
         $comment->commenter_id   = $this->getKey();
         $comment->commenter_type = get_class($this);
 
+        $this->getEventDispatcher()->fire('namest.commentable.prepare', [$this, $message]);
+
         return $comment;
     }
 
