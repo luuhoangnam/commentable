@@ -20,7 +20,7 @@ class CommentableServiceProvider extends ServiceProvider
     {
         // Publish a config file
         $this->publishes([
-            __DIR__ . '/../config/likeable.php' => config_path('likeable.php')
+            __DIR__ . '/../config/commentable.php' => config_path('likeable.php')
         ], 'config');
 
         // Publish your migrations
