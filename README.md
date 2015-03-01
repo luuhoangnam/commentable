@@ -19,6 +19,8 @@ $comments = \Namest\Commentable\Comment::by($user, 'App\Post'); // Same as above
 
 ```php
 $user->comments; // Return all comments that the user was leave
+$user->commentables; // Return all commentable (in all types)
+$post->commenters; // Return all commenters (in all types)
 ```
 
 # Censoring
