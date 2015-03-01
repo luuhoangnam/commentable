@@ -9,11 +9,14 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 /**
  * Class Comment
  *
- * @property string message
- * @property int    commenter_id
- * @property string commenter_type
- * @property int    commentable_id
- * @property string commentable_type
+ * @property string     message
+ * @property int        commenter_id
+ * @property string     commenter_type
+ * @property int        commentable_id
+ * @property string     commentable_type
+ *
+ * @property-read Model $commenter
+ * @property-read Model $commentable
  *
  * @method static QueryBuilder|EloquentBuilder|$this by(Model $commenter, $commentableType = null)
  *
@@ -122,5 +125,21 @@ class Comment extends Model
     public function setMessageAttribute($message)
     {
         $this->attributes['message'] = $this->censor($message);
+    }
+
+    /**
+     * @return Model
+     */
+    public function getCommenterAttribute()
+    {
+        return forward_static_call([$this->commenter_type, 'find'], $this->commenter_id);
+    }
+
+    /**
+     * @return Model
+     */
+    public function getCommentableAttribute()
+    {
+        return forward_static_call([$this->commentable_type, 'find'], $this->commentable_id);
     }
 }
