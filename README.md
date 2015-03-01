@@ -81,4 +81,48 @@ $post->commenters; // Return all commenters (in all types)
 
 Set up censoring options in `config/commentable.php` file
 
+# Events
 
+#### namest.commentable.prepare
+
+When: Parepare for `$commenter` to leave a comment on the commentable and but before event `namest.commentable.commenting`
+
+Payloads:
+- `$commenter`: Who do this action
+- `$message`: Comment message
+
+Usage:
+```php
+\Event::listen('namest.commentable.prepare', function ($commenter, $message) {
+    // Do something
+});
+```
+
+#### namest.commentable.commenting
+
+When: Before the `$commenter` leave a comment on the commentable but after the event `namest.commentable.prepare`
+
+Payloads:
+- `$commentable`: Which receive a comment from commenter
+- `$message`: Comment message
+
+Usage:
+```php
+\Event::listen('namest.commentable.commenting', function ($commentable, $message) {
+    // Do something
+});
+```
+
+#### namest.commentable.commented
+
+When: After the `$commenter` left a comment on the commentable
+
+Payloads:
+- `$comment`: Comment instance (you can get commenter & commentable from comment instance by `$comment->commenter` & `$comment->commentable`)
+
+Usage:
+```php
+\Event::listen('namest.commentable.commented', function ($comment) {
+    // Do something
+});
+```
