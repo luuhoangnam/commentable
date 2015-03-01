@@ -15,6 +15,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @package Namest\Commentable
  *
  * @property-read Collection $comments
+ * @property-read Collection $commentables
  *
  * @method static QueryBuilder|EloquentBuilder|$this wasCommentedOn(Model $commentable)
  */
@@ -66,5 +67,20 @@ trait CommenterTrait
                 ->where('comments.commentable_type', '=', get_class($commentable));
 
         return $builder;
+    }
+
+    /**
+     * TODO Optimize performance by reduce SQL query
+     *
+     * @return array
+     */
+    public function getCommentablesAttribute()
+    {
+        $relation = $this->hasMany(Comment::class, 'commenter_id');
+        $relation->getQuery()->where('commenter_type', '=', get_class($this));
+
+        return new Collection(array_map(function ($like) {
+            return forward_static_call([$like['commentable_type'], 'find'], $like['commentable_id']);
+        }, $relation->getResults()->toArray()));
     }
 }
